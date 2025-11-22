@@ -55,13 +55,34 @@ const Hero: React.FC = () => {
             fontFamily: '"Press Start 2P", cursive',
             fontWeight: 400,
             fontStyle: 'normal',
-            fontSize: '1.5rem',
+            fontSize: '1rem',
             marginBottom: '1rem',
             color: '#000000ff',
             paddingTop: '15px',
           }}
         >
-          ✨✨ If the internet streams it, VidKitty redeems it. ✨✨
+          <span role="img" aria-label="sparkles">
+            ✨✨
+          </span>{' '}
+          {
+            [
+              'Paste a link real quick — VidKitty does the trick.',
+              'Any site, any byte — VidKitty gets it right.',
+              'Drop the URL, ring the bell — VidKitty saves it well.',
+              'From YouTube to… you know who — VidKitty downloads it too.',
+              'If it moves on-screen, VidKitty makes it clean.',
+              'If it has a link, VidKitty makes it sync.',
+              'Every platform, any format — VidKitty’s got your back.',
+              'If it plays, it slays — VidKitty downloads it anyway.',
+              'From vids to bits, VidKitty never quits.',
+              'Click, fetch, done — VidKitty gets every one.',
+              'If the internet streams it, VidKitty redeems it.',
+              'Stream, scream, or meme — VidKitty grabs the whole scene.',
+            ][Math.floor(Math.random() * 12)]
+          }{' '}
+          <span role="img" aria-label="sparkles">
+            ✨✨
+          </span>
         </p>
       </div>
     </section>

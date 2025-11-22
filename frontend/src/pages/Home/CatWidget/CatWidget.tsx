@@ -1,104 +1,86 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import './CatWidget.css';
+import tomTheCat from '../../../assets/CatWidget/tomthecat.gif';
 
-// Import all GIFs
-import catRunX2 from '../../../assets/CatWidget/catrunx2.gif';
-import catRunX4 from '../../../assets/CatWidget/catrunx4.gif';
-import catSpritesOriginal from '../../../assets/CatWidget/catspritesoriginal.gif';
-import catSpritesX2 from '../../../assets/CatWidget/catspritesx2.gif';
-import catSpritesX4 from '../../../assets/CatWidget/catspritesx4.gif';
-import catWalkX2 from '../../../assets/CatWidget/catwalkx2.gif';
-import catWalkX4 from '../../../assets/CatWidget/catwalkx4.gif';
-
-const catGIFs = [
-  catRunX2,
-  catRunX4,
-  catSpritesOriginal,
-  catSpritesX2,
-  catSpritesX4,
-  catWalkX2,
-  catWalkX4,
+const sleepyLines = [
+  'Stop disturbing my sleep... 😴💤',
+  'Zzz... leave me alone! 🛌💖',
+  'I am too comfy right now… UwU 🌙✨',
+  'Do not poke me! >.< 🐾',
+  'Let me nap in peace! 💤💜',
+  'Nya~ I’m snoozing… UwU 🐱',
+  'Shhh… tiny kitty sleeping 😽💤',
+  'Nap time is sacred! 🌸😴',
+  'Leave me be, human! 🐾💖',
+  'Soft kitty, warm kitty… Zzz 🐱💤',
+  'I’m dreaming of treats… 🍣😽',
+  'Paw me not! UwU 🐾💤',
+  'Snooze mode activated… 💤✨',
+  'No touching, UwU 😼💖',
+  'Comfy, cozy, sleepy… 🌙💤',
+  'Snuggle me later… 🐱💜',
+  'Nap first, pet later… UwU 😽',
+  'I iz sleepy… 😴💫',
+  'Leave me in peace, UwU 🐾💖',
+  'Tiny kitty needs zzz… 🐱💤',
+  'Quiet… kitty dreams! 💤🌸',
+  'Do not disturb UwU 😽✨',
+  'I iz napping… 🛌💜',
+  'Sweet dreams for me… 🌙😴',
+  'Soft paws, soft snooze… UwU 🐾💤',
+  'Let me snooze UwU 😽💖',
+  'Sleepy beans resting… 🐾💤',
+  'Zzz… kitty nap time! 🌸😴',
+  'Purr… I am resting… UwU 😽',
 ];
-
-const petLines = [
-  'nya~',
-  'pet me again!!',
-  'I am smol kitty',
-  'purr purr purr',
-  '✨ meow ✨',
-  'I like u hooman',
-  'give treats pls',
-];
-
-const ouchLines = ['ouch!! >:(', 'bad hooman!!', 'hey!!', 'no hit >:c'];
 
 export default function CatWidget() {
   const [bubble, setBubble] = useState('');
-  const [heart, setHeart] = useState(false);
-  const [gifIndex, setGifIndex] = useState(0);
+  const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [clickStreak, setClickStreak] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Randomly cycle GIFs every 10s for fun
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setGifIndex((i) => (i + 1) % catGIFs.length);
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Eyes follow cursor
-  useEffect(() => {
-    function handleMove(e: MouseEvent) {
-      const eyes = document.querySelectorAll('.eye');
-      eyes.forEach((eye) => {
-        const rect = (eye as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - (rect.left + rect.width / 2);
-        const y = e.clientY - (rect.top + rect.height / 2);
-        const angle = Math.atan2(y, x);
-        const move = 3;
-        const pupil = (eye as HTMLElement).querySelector('::after');
-        (eye as HTMLElement).style.transform =
-          `translate(${Math.cos(angle) * move}px, ${Math.sin(angle) * move}px)`;
+  // Generate random hearts
+  function createHearts(num: number) {
+    const newHearts = [];
+    for (let i = 0; i < num; i++) {
+      newHearts.push({
+        id: Date.now() + Math.random() * 1000 + i,
+        x: Math.random() * 80 - 40, // random x offset
+        y: Math.random() * 50 - 25, // random y offset
       });
     }
-    window.addEventListener('mousemove', handleMove);
-    return () => window.removeEventListener('mousemove', handleMove);
-  }, []);
-
-  // Pet (left click)
-  function handlePet() {
-    setHeart(true);
-    setBubble(petLines[Math.floor(Math.random() * petLines.length)]);
-    setTimeout(() => setHeart(false), 900);
-    setTimeout(() => setBubble(''), 1900);
+    setHearts((prev) => [...prev, ...newHearts]);
+    // Remove hearts after animation
+    setTimeout(() => {
+      setHearts((prev) => prev.filter((h) => !newHearts.includes(h)));
+    }, 1000);
   }
 
-  function handleHit(e: React.MouseEvent) {
-    e.preventDefault();
-    setBubble(ouchLines[Math.floor(Math.random() * ouchLines.length)]);
-    if (containerRef.current) {
-      containerRef.current.style.transform = 'translateY(-6px) scale(0.9)';
-      setTimeout(() => {
-        if (containerRef.current) containerRef.current.style.transform = 'translateY(0) scale(1)';
-      }, 200);
-    }
-    setTimeout(() => setBubble(''), 1500);
+  // Tap (left click)
+  function handleTap() {
+    const heartsCount = clickStreak + 1; // increase hearts per click streak
+    createHearts(heartsCount);
+    setClickStreak(clickStreak + 1);
+
+    // Show bubble
+    setBubble(sleepyLines[Math.floor(Math.random() * sleepyLines.length)]);
+    setTimeout(() => setBubble(''), 1900);
   }
 
   return (
     <div className="cat-widget-root">
-      <div
-        className="cat-container"
-        ref={containerRef}
-        onClick={handlePet}
-        onContextMenu={handleHit}
-      >
-        <img src={catGIFs[gifIndex]} className="cat-gif" alt="pixel cat" />
-        <div className="cat-eyes">
-          <div className="eye eye-left"></div>
-          <div className="eye eye-right"></div>
-        </div>
-        {heart && <div className="heart">❤</div>}
+      <div className="cat-container" ref={containerRef} onClick={handleTap}>
+        <img src={tomTheCat} className="cat-gif" alt="Tom the cat" />
+
+        {/* Hearts */}
+        {hearts.map((h) => (
+          <div key={h.id} className="heart" style={{ left: `${50 + h.x}%`, top: `${-10 + h.y}px` }}>
+            ❤
+          </div>
+        ))}
+
+        {/* Bubble */}
         {bubble && <div className="cat-bubble">{bubble}</div>}
       </div>
     </div>

@@ -1,91 +1,70 @@
+/* Root container */
 .cat-widget-root {
   position: fixed;
   bottom: 20px;
-  left: 0;
-  right: 0;
+  left: 20px;
   pointer-events: none;
   z-index: 9999;
   user-select: none;
 }
 
+/* Cat container */
 .cat-container {
-  position: absolute;
-  animation: cat-walk 16s linear infinite;
+  position: relative;
   pointer-events: auto;
+  display: inline-block;
 }
 
-@keyframes cat-walk {
-  0% {
-    transform: translateX(-20vw);
-  }
-  50% {
-    transform: translateX(50vw);
-  }
-  100% {
-    transform: translateX(120vw);
-  }
-}
-
+/* Cat GIF - slightly bigger */
 .cat-gif {
-  width: 140px;
+  width: 200px; /* increased from 140px */
+  height: auto;
   image-rendering: pixelated;
-  transition: transform 0.15s ease;
+  display: block;
 }
 
-.cat-eyes {
-  position: absolute;
-  top: 40px;
-  left: 45px;
-  width: 50px;
-  height: 24px;
-  pointer-events: none;
-}
-
-.eye {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: white;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-.eye::after {
-  content: '';
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  background: black;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.08s linear;
-}
-
-.eye-left {
-  left: 0;
-}
-.eye-right {
-  right: 0;
-}
-
-/* Speech bubble */
+/* Speech bubble - slightly bigger font and max-width */
 .cat-bubble {
   position: absolute;
-  bottom: 150px;
+  bottom: 180px; /* moved up slightly for bigger cat */
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  padding: 14px;
-  border-radius: 10px;
+  padding: 16px 20px; /* bigger padding */
+  border-radius: 12px;
   border: 3px solid black;
   font-family: 'Press Start 2P', cursive;
-  font-size: 12px;
-  line-height: 1.3;
+  font-size: 14px; /* bigger font */
+  line-height: 1.4;
   text-align: center;
-  white-space: nowrap;
+  white-space: pre-wrap;
   pointer-events: none;
+  max-width: 250px; /* bigger bubble */
   animation: bubble-pop 0.3s ease;
+}
+
+/* Hearts - slightly bigger */
+.heart {
+  position: absolute;
+  font-size: 26px; /* bigger hearts */
+  color: red;
+  opacity: 0;
+  animation: heart-float 1s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes heart-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.8) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50px) scale(1.3) rotate(15deg);
+    opacity: 0;
+  }
 }
 
 @keyframes bubble-pop {
@@ -96,30 +75,5 @@
   100% {
     transform: scale(1) translateX(-50%);
     opacity: 1;
-  }
-}
-
-/* Heart animation */
-.heart {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
-  opacity: 0;
-  animation: heart-float 1s ease forwards;
-}
-
-@keyframes heart-float {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, 10px) scale(0.6);
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -30px) scale(1.2);
   }
 }
