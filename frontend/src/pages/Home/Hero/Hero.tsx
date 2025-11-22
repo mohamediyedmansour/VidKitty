@@ -1,5 +1,6 @@
 import React from 'react';
 import animeBackground from '../../../assets/anime_background.png';
+import VideoLinkPut from '../VideoLinkPut/VideoLinkPut';
 
 const Hero: React.FC = () => {
   return (
@@ -59,6 +60,7 @@ const Hero: React.FC = () => {
             marginBottom: '1rem',
             color: '#000000ff',
             paddingTop: '15px',
+            paddingBottom: '10px',
           }}
         >
           <span role="img" aria-label="sparkles">
@@ -69,11 +71,11 @@ const Hero: React.FC = () => {
               'Paste a link real quick — VidKitty does the trick.',
               'Any site, any byte — VidKitty gets it right.',
               'Drop the URL, ring the bell — VidKitty saves it well.',
-              'From YouTube to… you know who — VidKitty downloads it too.',
+              'From YouTube to you know who — VidKitty downloads it too.',
               'If it moves on-screen, VidKitty makes it clean.',
               'If it has a link, VidKitty makes it sync.',
               'Every platform, any format — VidKitty’s got your back.',
-              'If it plays, it slays — VidKitty downloads it anyway.',
+              'If it plays, it slays — VidKitty downloads it anyways.',
               'From vids to bits, VidKitty never quits.',
               'Click, fetch, done — VidKitty gets every one.',
               'If the internet streams it, VidKitty redeems it.',
@@ -84,6 +86,7 @@ const Hero: React.FC = () => {
             ✨✨
           </span>
         </p>
+        <VideoLinkPut />
       </div>
     </section>
   );

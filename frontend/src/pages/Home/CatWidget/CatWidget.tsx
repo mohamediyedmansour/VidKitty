@@ -40,7 +40,6 @@ export default function CatWidget() {
   const [clickStreak, setClickStreak] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Generate random hearts
   function createHearts(num: number) {
     const newHearts = [];
     for (let i = 0; i < num; i++) {
@@ -51,19 +50,16 @@ export default function CatWidget() {
       });
     }
     setHearts((prev) => [...prev, ...newHearts]);
-    // Remove hearts after animation
     setTimeout(() => {
       setHearts((prev) => prev.filter((h) => !newHearts.includes(h)));
     }, 1000);
   }
 
-  // Tap (left click)
   function handleTap() {
     const heartsCount = clickStreak + 1; // increase hearts per click streak
     createHearts(heartsCount);
     setClickStreak(clickStreak + 1);
 
-    // Show bubble
     setBubble(sleepyLines[Math.floor(Math.random() * sleepyLines.length)]);
     setTimeout(() => setBubble(''), 1900);
   }
@@ -73,14 +69,12 @@ export default function CatWidget() {
       <div className="cat-container" ref={containerRef} onClick={handleTap}>
         <img src={tomTheCat} className="cat-gif" alt="Tom the cat" />
 
-        {/* Hearts */}
         {hearts.map((h) => (
           <div key={h.id} className="heart" style={{ left: `${50 + h.x}%`, top: `${-10 + h.y}px` }}>
             ❤
           </div>
         ))}
 
-        {/* Bubble */}
         {bubble && <div className="cat-bubble">{bubble}</div>}
       </div>
     </div>
