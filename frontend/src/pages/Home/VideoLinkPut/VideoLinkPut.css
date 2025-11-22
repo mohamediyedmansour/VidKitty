@@ -79,7 +79,7 @@
 }
 
 .downloading-state img {
-  width: 300px; /* bigger size */
+  width: 500px; /* bigger size */
   max-width: 80%; /* responsive on small screens */
   margin-bottom: 16px;
 }

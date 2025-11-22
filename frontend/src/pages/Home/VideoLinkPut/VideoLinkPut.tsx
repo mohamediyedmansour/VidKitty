@@ -21,7 +21,7 @@ const VideoLinkPut: React.FC = () => {
   }, [showError]);
 
   useEffect(() => {
-    let interval: NodeJS.Timer;
+    let interval: number;
     if (downloading) {
       setProgress(0);
       interval = setInterval(() => {
@@ -38,8 +38,13 @@ const VideoLinkPut: React.FC = () => {
     return () => clearInterval(interval);
   }, [downloading]);
 
+  const isValidUrl = (url: string) => {
+    // Simple URL validation regex
+    return /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/\S*)?$/.test(url);
+  };
+
   const handleDownload = () => {
-    if (!videoLink) {
+    if (!videoLink || !isValidUrl(videoLink)) {
       setShowError(true);
       return;
     }

@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import os
 
-from backend.auth import router as auth_router, get_current_user
-from backend.download import download_video
-from backend.utils import remove_file
+from auth import router as auth_router, get_current_user
+from download import download_video
+from utils import remove_file
 
 app = FastAPI(title="Project API")
 
