@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-import Home from "./pages/Home/Home";
-import About from "./pages/About/About";
-import "./App.css"; // Assuming you have a global CSS file
+import Home from './pages/Home/Home';
+import About from './pages/About/About';
+import './App.css'; // Assuming you have a global CSS file
 
 function App() {
-
   return (
     <Router>
       {/* <nav style={{ display: "flex", gap: "10px" }}>
@@ -18,8 +17,7 @@ function App() {
         <Route path="/about" element={<About />} />
       </Routes>
     </Router>
-
-  )
+  );
 }
 
-export default App
+export default App;
