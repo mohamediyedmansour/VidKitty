@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.responses import FileResponse
+import os
 
 from backend.auth import router as auth_router, get_current_user
 from backend.download import download_video
+from backend.utils import remove_file
 
 app = FastAPI(title="Project API")
 
@@ -26,9 +28,14 @@ def download(video_url: str, highres: bool = False, subtitles: bool = False, typ
     return download_video(video_url, highres, subtitles, type)
 
 @app.get("/get_vid/{video_hash}.{ext}")
-def get_video(video_hash: str, ext: str):
+def get_video(video_hash: str, ext: str, background_tasks: BackgroundTasks):
     file_path = f"backend/tmp/{video_hash}.{ext}"
-    try:
-        return FileResponse(path=file_path, filename=f"{video_hash}.{ext}", media_type='application/octet-stream')
-    except FileNotFoundError:
+    if not os.path.exists(file_path):
         return {"error": "File not found"}
+    
+    background_tasks.add_task(remove_file, file_path)
+    return FileResponse(
+        path=file_path,
+        filename=f"{video_hash}.{ext}",
+        media_type='application/octet-stream'
+    )

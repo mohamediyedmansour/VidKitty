@@ -2,10 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from backend.utils import verify_password, hash_password, create_jwt, decode_jwt
 
-
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
 
 fake_db = {}
 
@@ -14,7 +12,6 @@ def init_fake_user():
         fake_db["test@example.com"] = hash_password("password123")
 
 init_fake_user()
-
 
 @router.post("/register")
 def register(email: str, password: str):
@@ -29,16 +26,11 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     email = form.username
     password = form.password
 
-
     if email not in fake_db or not verify_password(password, fake_db[email]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-
     token = create_jwt({"sub": email})
     return {"access_token": token, "token_type": "bearer"}
-
-
-
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     payload = decode_jwt(token)

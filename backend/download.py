@@ -1,13 +1,23 @@
+from fastapi import HTTPException
 import yt_dlp
 from typing import Any, Dict
 from time import time
 
-def download_video(video_url: str, highres: bool, subtitles: bool, type: str) -> str:
+def download_video(video_url: str, highres: bool, subtitles: bool, type: str) -> Dict[str, Any]:
     type = type.lower()
     if type not in ["video", "audio"]:
-        return {"error": "Invalid type, must be 'Video' or 'Audio'"}
+        raise HTTPException(status_code=400, detail="Invalid type, must be 'video' or 'audio'")
     
     video_hash = abs(hash(video_url + str(highres) + str(subtitles) + str(int(time()))))
+    
+    with yt_dlp.YoutubeDL({}) as ydl:
+        try:
+            info = ydl.extract_info(video_url, download=False)
+            duration = info.get('duration', 0)
+            if duration > 600:
+                raise HTTPException(status_code=400, detail="Video is longer than 10 minutes.")
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Video is longer than 10 minutes.")
     
     ydl_opts: Dict[str, Any] = {
         'outtmpl': f'backend/tmp/{video_hash}.%(ext)s',
@@ -20,7 +30,7 @@ def download_video(video_url: str, highres: bool, subtitles: bool, type: str) ->
             ydl_opts['writesubtitles'] = True
             ydl_opts['subtitleslangs'] = ['en']
             ydl_opts['subtitleformat'] = 'srt'
-    else:  # audio
+    else:  
         ydl_opts.update({
             'format': 'bestaudio/best',
             'postprocessors': [{
@@ -31,7 +41,7 @@ def download_video(video_url: str, highres: bool, subtitles: bool, type: str) ->
         })
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(video_url, download=True)
+        ydl.download([video_url])
         video_ext = 'mp4' if type == 'video' else 'mp3'
         file_path = f"{video_hash}.{video_ext}"
 
