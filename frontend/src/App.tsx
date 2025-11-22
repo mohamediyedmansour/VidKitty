@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
+import "./App.css"; // Assuming you have a global CSS file
 
 function App() {
 
