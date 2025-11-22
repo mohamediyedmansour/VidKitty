@@ -1404,6 +1404,11 @@ react-dom@^19.2.0:
   dependencies:
     scheduler "^0.27.0"
 
+react-kawaii@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-kawaii/-/react-kawaii-1.6.0.tgz#59f3b674cd44926ea86250e41d5933bd46d53060"
+  integrity sha512-cmz9zzuIEplDIPRrtW9MiQsszVZBRzFYFwfxbArskn+0qMLzTQJPq+6avkVDvvTHI9GzvnMc9HhVCwUq+KpJUg==
+
 react-refresh@^0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.18.0.tgz#2dce97f4fe932a4d8142fa1630e475c1729c8062"

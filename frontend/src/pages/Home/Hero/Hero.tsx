@@ -10,8 +10,9 @@ const Hero: React.FC = () => {
         height: '100vh',
         overflow: 'hidden',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
+        paddingTop: '15vh',
         background: '#222',
       }}
     >
@@ -49,7 +50,19 @@ const Hero: React.FC = () => {
           Welcome to VidKitty
         </h1>
 
-        <p>Your hub for anime videos</p>
+        <p
+          style={{
+            fontFamily: '"Press Start 2P", cursive',
+            fontWeight: 400,
+            fontStyle: 'normal',
+            fontSize: '1.5rem',
+            marginBottom: '1rem',
+            color: '#000000ff',
+            paddingTop: '15px',
+          }}
+        >
+          ✨✨ If the internet streams it, VidKitty redeems it. ✨✨
+        </p>
       </div>
     </section>
   );
