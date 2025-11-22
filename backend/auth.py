@@ -1,13 +1,19 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from utils import verify_password, hash_password, create_jwt, decode_jwt
+from backend.utils import verify_password, hash_password, create_jwt, decode_jwt
 
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-fake_db = {"test@example.com": hash_password("password123")}
+fake_db = {}
+
+def init_fake_user():
+    if "test@example.com" not in fake_db:
+        fake_db["test@example.com"] = hash_password("password123")
+
+init_fake_user()
 
 
 @router.post("/register")

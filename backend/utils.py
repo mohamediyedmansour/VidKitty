@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import jwt
 
 
-pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 SECRET_KEY = os.getenv("SECRET_KEY", "devsecret")
