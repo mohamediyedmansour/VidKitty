@@ -7,7 +7,7 @@ from auth import router as auth_router, get_current_user
 from download import download_video
 from utils import remove_file
 
-app = FastAPI(title="Project API")
+app = FastAPI(title="VidKitty API", version="1.0.0")
 
 app.add_middleware(
 CORSMiddleware,

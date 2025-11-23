@@ -1,4 +1,5 @@
 import os
+import threading
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import jwt
@@ -30,3 +31,17 @@ def decode_jwt(token: str):
 def remove_file(file_path: str):
     if os.path.exists(file_path):
         os.remove(file_path)
+
+def schedule_autodelete(file_path: str, delay_seconds: int = 300):
+    def _del_if_exists():
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except Exception:
+            # swallow any exception here to avoid crashing the timer thread
+            pass
+
+    timer = threading.Timer(delay_seconds, _del_if_exists)
+    timer.daemon = True
+    timer.start()
+    return timer

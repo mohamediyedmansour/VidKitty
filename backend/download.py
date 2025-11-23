@@ -2,6 +2,7 @@ from fastapi import HTTPException
 import yt_dlp
 from typing import Any, Dict
 from time import time
+from utils import schedule_autodelete
 
 def download_video(video_url: str, highres: bool, subtitles: bool, type: str) -> Dict[str, Any]:
     type = type.lower()
@@ -44,5 +45,8 @@ def download_video(video_url: str, highres: bool, subtitles: bool, type: str) ->
         ydl.download([video_url])
         video_ext = 'mp4' if type == 'video' else 'mp3'
         file_path = f"{video_hash}.{video_ext}"
+        full_path = f"backend/tmp/{file_path}"
+        schedule_autodelete(full_path, delay_seconds=300)
+
 
     return {"file_path": file_path, "video_hash": video_hash, "ext": video_ext}
