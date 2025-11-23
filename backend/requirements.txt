@@ -5,3 +5,8 @@ python-dotenv
 pyjwt
 python-multipart
 yt-dlp
+sqlalchemy 
+alembic 
+psycopg2-binary
+asyncpg
+dotenv
