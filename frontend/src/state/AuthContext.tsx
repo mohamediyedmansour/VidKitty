@@ -1,25 +1,43 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 
 type AuthContextType = {
   isLoggedIn: boolean;
-  login: () => void;
+  login: (token?: string) => void;
   logout: () => void;
-  toggleLogin: () => void;
   setLoggedIn: (v: boolean) => void;
+  getToken: () => string | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const TOKEN_KEY = 'access_token';
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const login = () => setIsLoggedIn(true);
-  const logout = () => setIsLoggedIn(false);
-  const toggleLogin = () => setIsLoggedIn((v) => !v);
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const login = (token?: string) => {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    }
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    setIsLoggedIn(false);
+  };
+
+  const getToken = () => localStorage.getItem(TOKEN_KEY);
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, login, logout, toggleLogin, setLoggedIn: setIsLoggedIn }}
+      value={{ isLoggedIn, login, logout, setLoggedIn: setIsLoggedIn, getToken }}
     >
       {children}
     </AuthContext.Provider>

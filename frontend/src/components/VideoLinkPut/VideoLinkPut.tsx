@@ -2,23 +2,25 @@ import React, { useState, useEffect } from 'react';
 import './VideoLinkPut.css';
 import downloadIcon from '../../assets/Download.svg';
 import lolCatLoading from '../../assets/LolCatLoading.gif';
+import { useAuth } from '../../state/AuthContext';
 
 const VideoLinkPut: React.FC = () => {
+  const { isLoggedIn } = useAuth();
   const [videoLink, setVideoLink] = useState('');
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   useEffect(() => {
     let timer: number | undefined;
-    if (showError) {
+    if (errorMessage) {
       timer = window.setTimeout(() => {
-        setShowError(false);
+        setErrorMessage(null);
       }, 5000);
     }
     return () => {
       if (timer) window.clearTimeout(timer);
     };
-  }, [showError]);
+  }, [errorMessage]);
 
   useEffect(() => {
     let interval: number;
@@ -44,11 +46,17 @@ const VideoLinkPut: React.FC = () => {
   };
 
   const handleDownload = () => {
-    if (!videoLink || !isValidUrl(videoLink)) {
-      setShowError(true);
+    if (!isLoggedIn) {
+      setErrorMessage('Please log in to download videos.');
       return;
     }
-    setShowError(false);
+
+    if (!videoLink || !isValidUrl(videoLink)) {
+      setErrorMessage('Please enter a valid link.');
+      return;
+    }
+
+    setErrorMessage(null);
     setDownloading(true);
   };
 
@@ -64,7 +72,7 @@ const VideoLinkPut: React.FC = () => {
               value={videoLink}
               onChange={(e) => {
                 setVideoLink(e.target.value);
-                if (showError && e.target.value) setShowError(false);
+                if (errorMessage && e.target.value) setErrorMessage(null);
               }}
             />
             <button className="download-btn" onClick={handleDownload}>
@@ -72,7 +80,7 @@ const VideoLinkPut: React.FC = () => {
               Download
             </button>
           </div>
-          {showError && <div className="input-error">Pweaaasseee input a link!</div>}
+          {errorMessage && <div className="input-error">{errorMessage}</div>}
         </>
       )}
 
