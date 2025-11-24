@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './CatWidget.css';
-import tomTheCat from '../../../assets/CatWidget/tomthecat.gif';
+import tomTheCat from '../../assets/CatWidget/tomthecat.gif';
 
 const sleepyLines = [
   'Stop disturbing my sleep... 😴💤',

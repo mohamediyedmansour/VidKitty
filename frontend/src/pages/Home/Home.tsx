@@ -1,7 +1,7 @@
 import React from 'react';
 
-import CatWidget from './CatWidget/CatWidget';
-import Hero from './Hero/Hero';
+import CatWidget from '../../components/CatWidget/CatWidget';
+import Hero from '../../components/Hero/Hero';
 import Nav from '../../components/Nav/Nav';
 
 const Home: React.FC = () => {

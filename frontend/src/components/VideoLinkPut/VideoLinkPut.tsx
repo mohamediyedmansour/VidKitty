@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './VideoLinkPut.css';
-import downloadIcon from '../../../assets/Download.svg';
-import lolCatLoading from '../../../assets/LolCatLoading.gif';
+import downloadIcon from '../../assets/Download.svg';
+import lolCatLoading from '../../assets/LolCatLoading.gif';
 
 const VideoLinkPut: React.FC = () => {
   const [videoLink, setVideoLink] = useState('');
