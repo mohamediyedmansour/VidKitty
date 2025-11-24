@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 27.5.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
-<rect style="fill:#FFFFFF;" width="1000" height="1000"/>
+     viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
+
 <g>
 	<path style="fill:#FEB0BD;" d="M395.402,244.013c56.414-24.681,91.367,44.21,91.367,72.209c0,0,35.368-100.209,101.682-76.63
 		s66.315,66.315,44.21,122.314c0,0,63.367-10.316,75.157,48.631s-45.683,94.314-98.735,98.735c0,0,55.999,306.521,16.21,490.728
@@ -14,12 +13,13 @@
 		c4.779-17.518,14.862-25.72,24.754-29.392c14.066-5.221,25.835-15.503,32.687-28.851
 		C449.522,411.218,466.659,390.761,498.428,393.202z"/>
 	
-		<ellipse transform="matrix(0.4514 -0.8923 0.8923 0.4514 6.1167 683.3708)" style="fill:#FFFFFF;" cx="558.857" cy="336.711" rx="48.311" ry="35.135"/>
+	<ellipse transform="matrix(0.4514 -0.8923 0.8923 0.4514 6.1167 683.3708)" style="fill:#FFFFFF;" cx="558.857" cy="336.711" rx="48.311" ry="35.135"/>
 	
-		<ellipse transform="matrix(0.7739 -0.6333 0.6333 0.7739 -134.9044 494.8566)" style="fill:#FFFFFF;" cx="625.563" cy="436.353" rx="41.723" ry="30.344"/>
+	<ellipse transform="matrix(0.7739 -0.6333 0.6333 0.7739 -134.9044 494.8566)" style="fill:#FFFFFF;" cx="625.563" cy="436.353" rx="41.723" ry="30.344"/>
 	
-		<ellipse transform="matrix(0.9624 -0.2717 0.2717 0.9624 -75.4864 127.3988)" style="fill:#FFFFFF;" cx="422.308" cy="336.289" rx="36.177" ry="49.743"/>
+	<ellipse transform="matrix(0.9624 -0.2717 0.2717 0.9624 -75.4864 127.3988)" style="fill:#FFFFFF;" cx="422.308" cy="336.289" rx="36.177" ry="49.743"/>
 	
-		<ellipse transform="matrix(0.6362 -0.7715 0.7715 0.6362 -214.2379 416.9298)" style="fill:#FFFFFF;" cx="334.989" cy="435.64" rx="31.395" ry="43.168"/>
+	<ellipse transform="matrix(0.6362 -0.7715 0.7715 0.6362 -214.2379 416.9298)" style="fill:#FFFFFF;" cx="334.989" cy="435.64" rx="31.395" ry="43.168"/>
 </g>
+
 </svg>

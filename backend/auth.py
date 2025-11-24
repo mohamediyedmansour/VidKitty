@@ -12,6 +12,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 class RegisterRequest(BaseModel):
+    name: str
     email: str
     password: str
 
@@ -36,7 +37,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     if exists:
         raise HTTPException(status_code=400, detail="Email already exists")
 
-    new_user = User(email=payload.email, password=hash_password(payload.password))
+    new_user = User(name=payload.name, email=payload.email, password=hash_password(payload.password))
 
     db.add(new_user)
     db.commit()

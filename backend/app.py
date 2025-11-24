@@ -24,7 +24,7 @@ def protected_route(user: dict = Depends(get_current_user)):
     return {"message": "You are authorized", "user": user}
 
 @app.get("/download")
-def download(video_url: str, highres: bool = False, subtitles: bool = False, type: str = "Video"):
+def download(video_url: str, highres: bool = False, subtitles: bool = False, type: str = "Video", user: dict = Depends(get_current_user)):
     return download_video(video_url, highres, subtitles, type)
 
 @app.get("/get_vid/{video_hash}.{ext}")
