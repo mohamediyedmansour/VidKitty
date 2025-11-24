@@ -1,0 +1,89 @@
+/* Nav styles for VidKitty */
+.vk-nav {
+  font-family: 'Press Start 2P', monospace;
+  padding: 12px 20px;
+  background: transparent !important;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  -webkit-backface-visibility: hidden;
+}
+
+.vk-nav-inner {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 16px;
+  width: 100%;
+  background: transparent;
+}
+
+.vk-logo {
+  height: 40px;
+  width: auto;
+}
+
+.vk-spacer {
+  flex: 1;
+}
+
+.vk-login {
+  background: #000;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.vk-login-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  background: linear-gradient(
+    90deg,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #00ffff,
+    #0000ff,
+    #8b00ff,
+    #ff0000
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: vk-rainbow 3s linear infinite;
+  display: inline-block;
+}
+
+@keyframes vk-rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Keep the button background fixed on hover/focus/active */
+.vk-login:hover,
+.vk-login:focus,
+.vk-login:active {
+  background: #000;
+  outline: none;
+}
+
+/* Prevent the button from showing system focus backgrounds */
+.vk-login:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.05);
+}

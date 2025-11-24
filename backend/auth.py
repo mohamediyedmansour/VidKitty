@@ -15,6 +15,11 @@ class RegisterRequest(BaseModel):
     email: str
     password: str
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -42,11 +47,11 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/login")
-def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(payload: LoginRequest, db: Session = Depends(get_db)):
 
-    user = db.query(User).filter(User.email == form.username).first()
+    user = db.query(User).filter(User.email == payload.email).first()
 
-    if not user or not verify_password(form.password, user.password):
+    if not user or not verify_password(payload.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_jwt({"sub": user.email})

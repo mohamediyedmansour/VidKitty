@@ -1,5 +1,4 @@
 import React from 'react';
-import animeBackground from '../../../assets/anime_background.png';
 import VideoLinkPut from '../VideoLinkPut/VideoLinkPut';
 
 const Hero: React.FC = () => {
@@ -8,28 +7,15 @@ const Hero: React.FC = () => {
       style={{
         position: 'relative',
         width: '100%',
-        height: '100vh',
+        height: 'calc(100vh - 64px)',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        paddingTop: '15vh',
-        background: '#222',
+        paddingTop: '12vh',
+        background: 'transparent',
       }}
     >
-      <img
-        src={animeBackground}
-        alt="Anime Background"
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          zIndex: 1,
-        }}
-      />
       <div
         style={{
           position: 'relative',
