@@ -10,3 +10,6 @@ alembic
 psycopg2-binary
 asyncpg
 dotenv
+uvicorn[standard]
+websockets
+asyncio
