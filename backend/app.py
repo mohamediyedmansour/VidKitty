@@ -8,7 +8,9 @@ from auth import router as auth_router, get_current_user
 from download import download_video, run_download_thread
 from queue import Queue, Empty
 from threading import Thread
-from utils import remove_file
+from utils import remove_file, decode_jwt
+from database.session import SessionLocal
+from database.models import User
 
 app = FastAPI(title="VidKitty API", version="1.0.0")
 
@@ -33,32 +35,72 @@ def download(video_url: str, highres: bool = False, subtitles: bool = False, typ
 
 @app.websocket("/ws/download")
 async def websocket_download(websocket: WebSocket, video_url: str, highres: bool = False, subtitles: bool = False, type: str = "Video"):
-    await websocket.accept()
-    q: Queue = Queue()
-    
-    thread = Thread(target=run_download_thread, args=(video_url, highres, subtitles, type, q), daemon=True)
-    thread.start()
+    # Authenticate before accepting the websocket connection.
+    # Accept either `Authorization: Bearer <token>` header or `?token=<token>` query param.
+    token = None
+    auth_header = websocket.headers.get("authorization")
+    if auth_header and auth_header.lower().startswith("bearer "):
+        token = auth_header.split(" ", 1)[1]
+    else:
+        token = websocket.query_params.get("token")
 
-    try:
-        while True:
-            try:
-                msg = await asyncio.to_thread(q.get, True, 0.5)
-            except Exception:
-                await websocket.send_json({"status": "heartbeat"})
-                await asyncio.sleep(0.1)  # let event loop run
-                continue
-
-            await websocket.send_json(msg)
-            await asyncio.sleep(0)  # yield back to loop
-
-            if msg.get("status") in ("finished", "error"):
-                break
-
-    except WebSocketDisconnect:
+    if not token:
+        try:
+            await websocket.close(code=1008)
+        except:
+            pass
         return
+
+    payload = decode_jwt(token)
+    if not payload:
+        try:
+            await websocket.close(code=1008)
+        except:
+            pass
+        return
+
+    email = payload.get("sub")
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            try:
+                await websocket.close(code=1008)
+            except:
+                pass
+            return
+
+        await websocket.accept()
+
+        q: Queue = Queue()
+        thread = Thread(target=run_download_thread, args=(video_url, highres, subtitles, type, q), daemon=True)
+        thread.start()
+
+        try:
+            while True:
+                try:
+                    msg = await asyncio.to_thread(q.get, True, 0.5)
+                except Exception:
+                    await websocket.send_json({"status": "heartbeat"})
+                    await asyncio.sleep(0.1)  # let event loop run
+                    continue
+
+                await websocket.send_json(msg)
+                await asyncio.sleep(0)  # yield back to loop
+
+                if msg.get("status") in ("finished", "error"):
+                    break
+
+        except WebSocketDisconnect:
+            return
+        finally:
+            try:
+                await websocket.close()
+            except:
+                pass
     finally:
         try:
-            await websocket.close()
+            db.close()
         except:
             pass
 

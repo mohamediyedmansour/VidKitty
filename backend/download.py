@@ -5,6 +5,8 @@ from time import time
 from utils import schedule_autodelete
 from queue import Queue
 from typing import Callable
+import glob
+import os
 
 
 def download_video(video_url: str, highres: bool, subtitles: bool, type: str) -> Dict[str, Any]:
@@ -18,14 +20,23 @@ def download_video(video_url: str, highres: bool, subtitles: bool, type: str) ->
     with yt_dlp.YoutubeDL({}) as ydl:
         try:
             info = ydl.extract_info(video_url, download=False)
-            duration = info.get('duration', 0)
+            duration = info.get('duration') or 0
             if duration > 600:
                 raise HTTPException(status_code=400, detail="Video is longer than 10 minutes.")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Video is longer than 10 minutes.")
 
+    # Set outtmpl explicitly so final filename is deterministic
+    if type == "video":
+        out_ext = "mp4"
+        outtmpl = f'backend/tmp/{video_hash}.{out_ext}'
+    else:
+        out_ext = "mp3"
+        # For audio, don't include extension in outtmpl - postprocessor will add it
+        outtmpl = f'backend/tmp/{video_hash}'
+
     ydl_opts: Dict[str, Any] = {
-        'outtmpl': f'backend/tmp/{video_hash}.%(ext)s',
+        'outtmpl': outtmpl,
     }
 
     if type == "video":
@@ -47,9 +58,12 @@ def download_video(video_url: str, highres: bool, subtitles: bool, type: str) ->
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([video_url])
-        video_ext = 'mp4' if type == 'video' else 'mp3'
+
+        # We set the outtmpl to the desired final extension, so return that deterministic name
+        video_ext = out_ext
         file_path = f"{video_hash}.{video_ext}"
         full_path = f"backend/tmp/{file_path}"
+
         schedule_autodelete(full_path, delay_seconds=300)
 
     return {"file_path": file_path, "video_hash": video_hash, "ext": video_ext}
@@ -127,8 +141,17 @@ def run_download_thread(video_url: str, highres: bool, subtitles: bool, type: st
                 out_queue.put({"status": "error", "message": f"Hook error: {str(e)}"})
 
         # yt-dlp options
+        # Set outtmpl explicitly so final filename is deterministic
+        if type == "video":
+            out_ext = "mp4"
+            outtmpl = f"backend/tmp/{video_hash}.{out_ext}"
+        else:
+            out_ext = "mp3"
+            # For audio, don't include extension in outtmpl - postprocessor will add it
+            outtmpl = f"backend/tmp/{video_hash}"
+
         ydl_opts: Dict[str, Any] = {
-            "outtmpl": f"backend/tmp/{video_hash}.%(ext)s",
+            "outtmpl": outtmpl,
             "progress_hooks": [progress_hook],
             "noplaylist": True,
         }
@@ -154,7 +177,7 @@ def run_download_thread(video_url: str, highres: bool, subtitles: bool, type: st
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
                 info = ydl.extract_info(video_url, download=False)
-                duration = info.get("duration", 0)
+                duration = info.get("duration") or 0
                 if duration > 600:
                     out_queue.put({"status": "error", "message": "Video is longer than 10 minutes."})
                     return
@@ -168,10 +191,11 @@ def run_download_thread(video_url: str, highres: bool, subtitles: bool, type: st
                 out_queue.put({"status": "error", "message": f"Download error: {str(e)}"})
                 return
 
-        # Completed
-        video_ext = "mp4" if type == "video" else "mp3"
+        # Completed: we used a deterministic outtmpl, so return that filename
+        video_ext = out_ext
         file_path = f"{video_hash}.{video_ext}"
         full_path = f"backend/tmp/{file_path}"
+
         schedule_autodelete(full_path, delay_seconds=300)
 
         out_queue.put({
