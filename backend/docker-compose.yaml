@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  traefik:
+    image: traefik:v2.11
+    command:
+      - '--providers.docker=true'
+      - '--entrypoints.websecure.address=:443'
+      - '--certificatesresolvers.myresolver.acme.httpchallenge=true'
+      - '--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=websecure'
+      - '--certificatesresolvers.myresolver.acme.email=admin@vidkitty.space'
+      - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
+    ports:
+      - '443:443'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - './letsencrypt:/letsencrypt'
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: vidkitty
+      POSTGRES_USER: vidkitty_user
+      POSTGRES_PASSWORD: supersecret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  vidkitty:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://vidkitty_user:supersecret@postgres/vidkitty
+      SECRET_KEY: WKDSHDJSOIODADOSADSA:LDJK
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.vidkitty.rule=Host(`vidkitty.space`)'
+      - 'traefik.http.routers.vidkitty.entrypoints=websecure'
+      - 'traefik.http.routers.vidkitty.tls.certresolver=myresolver'
+    depends_on:
+      - postgres
+    ports:
+      - '8000:8000' # internal only
+
+volumes:
+  postgres_data:
