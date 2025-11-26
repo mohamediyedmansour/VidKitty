@@ -83,3 +83,103 @@
   max-width: 80%; /* responsive on small screens */
   margin-bottom: 16px;
 }
+
+/* Switches and segmented controls */
+.switches-container {
+  margin-top: 12px; /* space between input and switches */
+  display: flex;
+  gap: 20px; /* margin between switch groups */
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.segment-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.segment-label {
+  font-size: 10px;
+  color: #000;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.segment {
+  display: inline-flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.88); /* slightly white background */
+}
+
+.segment-btn {
+  padding: 8px 12px;
+  background: transparent;
+  color: #111;
+  border: none;
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+}
+
+.segment-btn.active {
+  background: rgba(0, 0, 0, 0.85); /* slightly black button */
+  color: #fff;
+}
+
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Custom toggle */
+.vk-toggle {
+  display: inline-flex;
+  align-items: center;
+}
+
+.vk-toggle input {
+  display: none;
+}
+
+.vk-toggle-track {
+  width: 52px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.9); /* light white track */
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  transition: background 150ms ease;
+}
+
+.vk-toggle-knob {
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.85); /* slightly black knob */
+  border-radius: 50%;
+  transition: transform 150ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.vk-toggle input:checked + .vk-toggle-track {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.vk-toggle input:checked + .vk-toggle-track .vk-toggle-knob {
+  transform: translateX(24px);
+}
+
+@media (max-width: 640px) {
+  .input-container input {
+    width: 280px;
+  }
+  .switches-container {
+    gap: 10px;
+  }
+}

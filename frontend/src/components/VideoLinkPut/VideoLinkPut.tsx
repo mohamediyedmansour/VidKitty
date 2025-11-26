@@ -10,6 +10,9 @@ const VideoLinkPut: React.FC = () => {
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mode, setMode] = useState<'video' | 'audio'>('video');
+  const [subtitles, setSubtitles] = useState(false);
+  const [quality, setQuality] = useState<'high' | 'low' | false>('high');
   useEffect(() => {
     let timer: number | undefined;
     if (errorMessage) {
@@ -45,6 +48,20 @@ const VideoLinkPut: React.FC = () => {
     return /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/\S*)?$/.test(url);
   };
 
+  // If user switches to audio mode, disable subtitles automatically
+  React.useEffect(() => {
+    if (mode === 'audio') {
+      setSubtitles(false);
+    }
+  }, [mode]);
+
+  // Also clear quality when switching to audio
+  React.useEffect(() => {
+    if (mode === 'audio') {
+      setQuality(false);
+    }
+  }, [mode]);
+
   const handleDownload = () => {
     if (!isLoggedIn) {
       setErrorMessage('Please log in to download videos.');
@@ -57,6 +74,9 @@ const VideoLinkPut: React.FC = () => {
     }
 
     setErrorMessage(null);
+    // In a real app we'd send `videoLink` and the options below to the backend
+    // For now we just kick off the fake progress UI
+    console.log('Download options:', { videoLink, mode, subtitles, quality });
     setDownloading(true);
   };
 
@@ -64,7 +84,6 @@ const VideoLinkPut: React.FC = () => {
     <div className="video-link-put">
       {!downloading && (
         <>
-          <h1 className="title">Video Downloader</h1>
           <div className="input-container">
             <input
               type="text"
@@ -79,6 +98,62 @@ const VideoLinkPut: React.FC = () => {
               <img src={downloadIcon} className="download-icon" alt="Download" />
               Download
             </button>
+          </div>
+          <div className="switches-container">
+            <div className="segment-group">
+              <div className="segment-label">Mode</div>
+              <div className="segment">
+                <button
+                  className={mode === 'video' ? 'segment-btn active' : 'segment-btn'}
+                  onClick={() => setMode('video')}
+                >
+                  Video
+                </button>
+                <button
+                  className={mode === 'audio' ? 'segment-btn active' : 'segment-btn'}
+                  onClick={() => setMode('audio')}
+                >
+                  Audio
+                </button>
+              </div>
+            </div>
+
+            {mode !== 'audio' && (
+              <div className="toggle-group">
+                <div className="segment-label">Subtitles</div>
+                <label className="vk-toggle">
+                  <input
+                    type="checkbox"
+                    checked={subtitles}
+                    onChange={(e) => setSubtitles(e.target.checked)}
+                    aria-label="Toggle subtitles"
+                  />
+                  <span className="vk-toggle-track">
+                    <span className="vk-toggle-knob" />
+                  </span>
+                </label>
+              </div>
+            )}
+
+            {mode !== 'audio' && (
+              <div className="segment-group">
+                <div className="segment-label">Quality</div>
+                <div className="segment">
+                  <button
+                    className={quality === 'high' ? 'segment-btn active' : 'segment-btn'}
+                    onClick={() => setQuality('high')}
+                  >
+                    High
+                  </button>
+                  <button
+                    className={quality === 'low' ? 'segment-btn active' : 'segment-btn'}
+                    onClick={() => setQuality('low')}
+                  >
+                    Low
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           {errorMessage && <div className="input-error">{errorMessage}</div>}
         </>
