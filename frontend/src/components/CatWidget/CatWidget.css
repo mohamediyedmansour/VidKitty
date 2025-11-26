@@ -17,7 +17,7 @@
 
 /* Cat GIF - slightly bigger */
 .cat-gif {
-  width: 200px; /* increased from 140px */
+  width: clamp(80px, 15vw, 200px);
   height: auto;
   image-rendering: pixelated;
   display: block;
@@ -26,27 +26,27 @@
 /* Speech bubble - slightly bigger font and max-width */
 .cat-bubble {
   position: absolute;
-  bottom: 180px; /* moved up slightly for bigger cat */
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  padding: 16px 20px; /* bigger padding */
+  padding: 12px 14px;
   border-radius: 12px;
   border: 3px solid black;
   font-family: 'Press Start 2P', cursive;
-  font-size: 14px; /* bigger font */
+  font-size: clamp(12px, 2.5vw, 14px);
   line-height: 1.4;
   text-align: center;
   white-space: pre-wrap;
   pointer-events: none;
-  max-width: 250px; /* bigger bubble */
+  max-width: clamp(140px, 40vw, 250px);
   animation: bubble-pop 0.3s ease;
 }
 
 /* Hearts - slightly bigger */
 .heart {
   position: absolute;
-  font-size: 26px; /* bigger hearts */
+  font-size: clamp(18px, 4vw, 26px);
   color: red;
   opacity: 0;
   animation: heart-float 1s ease forwards;
@@ -75,5 +75,18 @@
   100% {
     transform: scale(1) translateX(-50%);
     opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .cat-widget-root {
+    left: auto;
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .cat-bubble {
+    bottom: calc(100% + 8px);
+    padding: 10px 12px;
   }
 }

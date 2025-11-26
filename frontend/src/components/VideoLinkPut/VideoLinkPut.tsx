@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './VideoLinkPut.css';
 import downloadIcon from '../../assets/Download.svg';
 import lolCatLoading from '../../assets/LolCatLoading.gif';
 import { useAuth } from '../../state/AuthContext';
 
 const VideoLinkPut: React.FC = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, getToken } = useAuth();
   const [videoLink, setVideoLink] = useState('');
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [finishedFile, setFinishedFile] = useState<string | null>(null);
+  const [finishedVisible, setFinishedVisible] = useState(false);
   const [mode, setMode] = useState<'video' | 'audio'>('video');
   const [subtitles, setSubtitles] = useState(false);
-  const [quality, setQuality] = useState<'high' | 'low' | false>('high');
+  const [quality, setQuality] = useState<'high' | 'low'>('high');
+  const wsRef = useRef<WebSocket | null>(null);
+  const [statusText, setStatusText] = useState<string | null>(null);
   useEffect(() => {
     let timer: number | undefined;
     if (errorMessage) {
@@ -25,23 +29,7 @@ const VideoLinkPut: React.FC = () => {
     };
   }, [errorMessage]);
 
-  useEffect(() => {
-    let interval: number;
-    if (downloading) {
-      setProgress(0);
-      interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setDownloading(false);
-            return 100;
-          }
-          return prev + Math.floor(Math.random() * 10) + 5; // random increment
-        });
-      }, 500);
-    }
-    return () => clearInterval(interval);
-  }, [downloading]);
+  // WebSocket will drive progress updates; no fake interval needed
 
   const isValidUrl = (url: string) => {
     // Simple URL validation regex
@@ -52,13 +40,6 @@ const VideoLinkPut: React.FC = () => {
   React.useEffect(() => {
     if (mode === 'audio') {
       setSubtitles(false);
-    }
-  }, [mode]);
-
-  // Also clear quality when switching to audio
-  React.useEffect(() => {
-    if (mode === 'audio') {
-      setQuality(false);
     }
   }, [mode]);
 
@@ -74,11 +55,110 @@ const VideoLinkPut: React.FC = () => {
     }
 
     setErrorMessage(null);
-    // In a real app we'd send `videoLink` and the options below to the backend
-    // For now we just kick off the fake progress UI
-    console.log('Download options:', { videoLink, mode, subtitles, quality });
-    setDownloading(true);
+    setFinishedFile(null);
+    setProgress(0);
+    setStatusText('Connecting...');
+
+    const token = getToken();
+    if (!token) {
+      setErrorMessage('Missing auth token. Please log in again.');
+      return;
+    }
+
+    const params = new URLSearchParams({
+      video_url: videoLink,
+      type: mode === 'audio' ? 'Audio' : 'Video',
+      highres: quality === 'high' ? 'true' : 'false',
+      subtitles: subtitles ? 'true' : 'false',
+      token,
+    });
+
+    const wsUrl = `ws://localhost:8000/ws/download?${params.toString()}`;
+
+    try {
+      const ws = new WebSocket(wsUrl);
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        console.log('WS connected');
+        setDownloading(true);
+        setStatusText('Downloading...');
+      };
+
+      ws.onmessage = (ev) => {
+        try {
+          const data = JSON.parse(ev.data);
+          if (data.status === 'heartbeat') return;
+
+          if (data.status === 'downloading') {
+            const pct = Number(data.progress_percent ?? data.progress ?? 0);
+            setProgress(Math.min(100, Math.round(pct)));
+            setStatusText('Downloading...');
+            return;
+          }
+
+          if (data.status === 'finished_encoding') {
+            setStatusText('Finalizing...');
+            return;
+          }
+
+          if (data.status === 'finished') {
+            const file = data.file_path || data.filename || null;
+            if (file) {
+              setFinishedFile(file);
+              // ensure we show the finished button with animation after it mounts
+              setTimeout(() => setFinishedVisible(true), 10);
+              setStatusText('Completed');
+            }
+            setProgress(100);
+            setDownloading(false);
+            ws.close();
+            wsRef.current = null;
+            return;
+          }
+
+          if (data.status === 'error') {
+            setErrorMessage(data.message || 'Download error');
+            setDownloading(false);
+            setStatusText(null);
+            ws.close();
+            wsRef.current = null;
+            return;
+          }
+        } catch (err) {
+          console.error('Invalid WS message', err);
+        }
+      };
+
+      ws.onerror = (err) => {
+        console.error('WS error', err);
+        setErrorMessage('WebSocket error. See console for details.');
+        setDownloading(false);
+        setStatusText(null);
+        ws.close();
+        wsRef.current = null;
+      };
+
+      ws.onclose = () => {
+        console.log('WS closed');
+        setStatusText((s) => (s === 'Completed' ? s : 'Connection closed'));
+        setDownloading(false);
+        wsRef.current = null;
+      };
+    } catch (err) {
+      console.error('Failed to open WS', err);
+      setErrorMessage('Failed to start download.');
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div className="video-link-put">
@@ -162,7 +242,27 @@ const VideoLinkPut: React.FC = () => {
       {downloading && (
         <div className="downloading-state">
           <img src={lolCatLoading} alt="Loading..." />
+
           <span className="progress">{Math.min(progress, 100)}%</span>
+          <div className="status-text">{statusText}</div>
+        </div>
+      )}
+
+      {finishedFile && (
+        <div className={`finished-state ${finishedVisible ? 'visible' : 'hidden'}`}>
+          <a
+            className="download-btn"
+            href={`${window.location.protocol}//${window.location.hostname}:8000/get_vid/${finishedFile}`}
+            download
+            onClick={() => {
+              // animate out then remove
+              setFinishedVisible(false);
+              setTimeout(() => setFinishedFile(null), 500);
+            }}
+          >
+            <img src={downloadIcon} className="download-icon" alt="Download" />
+            Download file
+          </a>
         </div>
       )}
     </div>

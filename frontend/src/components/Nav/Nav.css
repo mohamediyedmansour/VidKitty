@@ -75,6 +75,25 @@
   }
 }
 
+@media (max-width: 640px) {
+  .vk-nav {
+    padding: 8px 12px;
+  }
+
+  .vk-nav-inner {
+    gap: 10px;
+    padding: 0 8px;
+  }
+
+  .vk-logo {
+    height: 32px;
+  }
+
+  .vk-login-text {
+    font-size: 10px;
+  }
+}
+
 /* Keep the button background fixed on hover/focus/active */
 .vk-login:hover,
 .vk-login:focus,

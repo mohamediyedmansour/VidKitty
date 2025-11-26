@@ -4,10 +4,6 @@ from typing import Any, Dict
 from time import time
 from utils import schedule_autodelete
 from queue import Queue
-from typing import Callable
-import glob
-import os
-
 
 def download_video(video_url: str, highres: bool, subtitles: bool, type: str) -> Dict[str, Any]:
     """Existing synchronous download function (kept for compatibility)."""

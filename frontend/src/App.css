@@ -83,3 +83,36 @@ img {
   background: #ccc;
   border-radius: 4px;
 }
+
+/* Responsive container and utilities */
+:root {
+  --vk-max-width: 1200px;
+  --vk-gutter: 16px;
+}
+
+.vk-container {
+  max-width: var(--vk-max-width);
+  margin: 0 auto;
+  padding: 0 var(--vk-gutter);
+  width: 100%;
+}
+
+.vk-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.vk-col {
+  flex: 1 1 0px;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --vk-gutter: 12px;
+  }
+
+  body {
+    font-size: 14px;
+  }
+}

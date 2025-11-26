@@ -3,7 +3,7 @@
 .video-link-put {
   font-family: 'Press Start 2P', cursive;
   text-align: center;
-  padding: 40px 20px;
+  padding: clamp(16px, 4vw, 40px) clamp(12px, 4vw, 20px);
   color: #222;
 }
 
@@ -23,7 +23,8 @@
   padding: 10px;
   font-family: 'Press Start 2P', cursive;
   font-size: 12px;
-  width: 500px;
+  width: clamp(220px, 60%, 500px);
+  max-width: 100%;
   border: 2px solid #333;
   border-radius: 6px;
   outline: none;
@@ -79,9 +80,59 @@
 }
 
 .downloading-state img {
-  width: 500px; /* bigger size */
-  max-width: 80%; /* responsive on small screens */
+  width: clamp(120px, 60vw, 500px);
+  max-width: 100%;
   margin-bottom: 16px;
+}
+
+.progress-wrapper {
+  width: clamp(220px, 70%, 500px);
+  max-width: 100%;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  transition: width 300ms ease;
+}
+
+.status-text {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #333;
+}
+
+.cancel-btn {
+  margin-top: 12px;
+  background: #e53935;
+}
+
+.finished-state {
+  margin-top: 20px;
+}
+
+.finished-state {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.finished-state.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.finished-state.hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
 }
 
 /* Switches and segmented controls */
@@ -181,5 +232,21 @@
   }
   .switches-container {
     gap: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .video-link-put {
+    padding: 16px 12px;
+  }
+
+  .input-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .download-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
