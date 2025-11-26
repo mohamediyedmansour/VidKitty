@@ -72,9 +72,8 @@ const VideoLinkPut: React.FC = () => {
       subtitles: subtitles ? 'true' : 'false',
       token,
     });
-
-    const wsUrl = `ws://localhost:8000/ws/download?${params.toString()}`;
-
+    const baseUrl = import.meta.env.VITE_API_URL as string;
+    const wsUrl = `${baseUrl.replace(/^http/, 'ws')}/ws/download?${params.toString()}`;
     try {
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
