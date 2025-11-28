@@ -110,7 +110,7 @@ def get_video(video_hash: str, ext: str, background_tasks: BackgroundTasks):
     file_path = f"backend/tmp/{video_hash}.{ext}"
     if not os.path.exists(file_path):
         return {"error": "File not found"}
-    
+    #Weere  gonna add telegram bot here  
     background_tasks.add_task(remove_file, file_path)
     return FileResponse(
         path=file_path,
