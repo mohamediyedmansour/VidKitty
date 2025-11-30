@@ -2,6 +2,8 @@
 
 ### _FastAPI • Docker • Traefik • PostgreSQL • WebSockets • React • Vite_
 
+![Screenshot Placeholder](https://github.com/mohamediyedmansour/VidKitty/blob/main/frontend/public/Screenshot.png?raw=true)
+
 Welcome to **VidKitty**, your elegant, containerized, and authentication-protected video downloader system powered by WebSockets and FastAPI.  
 Built for speed, reliability, cuteness, and developer happiness. 😺⚡
 
